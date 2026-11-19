@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soprano Recorder Visual Flashcards</title>
+  <style>
+    /* CSS Variables for Light & Dark Themes */
+    :root {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-subtle: #e2e8f0;
+      --bg-input: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-card-back: rgba(99, 102, 241, 0.35);
+
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --primary-badge-bg: #eef2ff;
+      --primary-badge-text: #4f46e5;
+
+      --emerald-bg: #10b981;
+      --emerald-text: #059669;
+      --rose-bg-subtle: rgba(244, 63, 94, 0.12);
+      --rose-border: #f43f5e;
+      --rose-text: #e11d48;
+
+      --amber-bg: #fef3c7;
+      --amber-text: #b45309;
+      --amber-border: #fde68a;
+
+      --svg-stroke: #1e293b;
+      --svg-notehead: #4f46e5;
+      --svg-staff-line: #cbd5e1;
+      --svg-recorder-body: #f1f5f9;
+      --svg-recorder-border: #cbd5e1;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    .dark {
+      --bg-main: #020617;
+      --bg-card: #0f172a;
+      --bg-subtle: #0f172a;
+      --bg-input: #1e293b;
+      --border-color: #1e293b;
+      --border-card-back: rgba(99, 102, 241, 0.4);
+
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: #1e1b4b;
+      --primary-badge-bg: rgba(99, 102, 241, 0.2);
+      --primary-badge-text: #818cf8;
+
+      --emerald-bg: #10b981;
+      --emerald-text: #34d399;
+      --rose-bg-subtle: rgba(225, 29, 72, 0.25);
+      --rose-border: #f43f5e;
+      --rose-text: #fb7185;
+
+      --amber-bg: rgba(120, 53, 15, 0.4);
+      --amber-text: #fde047;
+      --amber-border: rgba(180, 83, 9, 0.6);
+
+      --svg-stroke: #f1f5f9;
+      --svg-notehead: #818cf8;
+      --svg-staff-line: #334155;
+      --svg-recorder-body: #1e293b;
+      --svg-recorder-border: #475569;
+    }
+
+    /* Reset & Core Setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      padding-top: 45px;
+      padding-bottom: 50px;
+    }
+
+    /* Container */
+    .app-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    /* Header & Navigation */
+    header {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background-color: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-icon-text {
+      padding: 8px 10px;
+      border-radius: 10px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-icon-text:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    .btn-icon-text:active {
+      transform: scale(0.96);
+    }
+
+    .btn-icon-text.hard-active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-square {
+      padding: 8px;
+      border-radius: 10px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-square:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    .btn-square:active {
+      transform: scale(0.96);
+    }
+
+    /* Deck Switcher */
+    .deck-switcher {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 4px;
+      border-radius: 12px;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-color);
+    }
+
+    .deck-tab {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background-color: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .deck-tab.active {
+      background-color: var(--bg-card);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .streak-badge {
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background-color: var(--amber-bg);
+      color: var(--amber-text);
+      font-weight: 800;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background-color: var(--bg-input);
+      border-radius: 9999px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* Main Stage & 3D Card Mechanics */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .perspective-container {
+      perspective: 1000px;
+      width: 100%;
+      margin: auto 0;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      min-height: 330px;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      cursor: pointer;
+    }
+
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background-color: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      border-color: var(--border-card-back);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .badge-mode {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background-color: var(--primary-badge-bg);
+      color: var(--primary-badge-text);
+    }
+
+    .btn-hint {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background-color: transparent;
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-hint:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    .visual-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+    }
+
+    .hint-box {
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background-color: var(--amber-bg);
+      color: var(--amber-text);
+      border: 1px solid var(--amber-border);
+      margin-bottom: 6px;
+    }
+
+    .hint-box.hidden {
+      display: none;
+    }
+
+    .card-footer-prompt {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Card Back Details */
+    .back-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .back-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .back-note-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .back-note-scientific {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: var(--primary-badge-bg);
+      color: var(--primary-badge-text);
+    }
+
+    .back-note-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .btn-play-tone {
+      padding: 8px 12px;
+      border-radius: 10px;
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-play-tone:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-play-tone:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes soundWave {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+    .playing-tone {
+      animation: soundWave 0.4s ease-in-out 2;
+    }
+
+    .back-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-light);
+      border-top: 1px solid var(--border-color);
+      padding-top: 6px;
+    }
+
+    /* Interactive Controls Area */
+    .controls-section {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .feedback-banner {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .feedback-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .feedback-text.correct {
+      color: var(--emerald-text);
+    }
+
+    .feedback-text.incorrect {
+      color: var(--rose-text);
+    }
+
+    /* Note Buttons Grid */
+    .guess-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .guess-grid.hard-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .guess-btn {
+      padding: 11px 4px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
+    }
+
+    .guess-grid.hard-grid .guess-btn {
+      font-size: 0.82rem;
+      padding: 9px 4px;
+    }
+
+    .guess-btn:hover {
+      border-color: var(--primary);
+    }
+
+    .guess-btn:active {
+      transform: scale(0.95);
+    }
+
+    .guess-btn.btn-correct {
+      background-color: var(--emerald-bg);
+      border-color: var(--emerald-bg);
+      color: #ffffff;
+      transform: scale(1.03);
+    }
+
+    .guess-btn.btn-wrong {
+      background-color: var(--rose-bg-subtle);
+      border-color: var(--rose-border);
+      color: var(--rose-text);
+      animation: shake 0.35s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    /* Primary Action Buttons */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-action {
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-subtle);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      border: none;
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-height: 640px) {
+      .flashcard-inner {
+        min-height: 280px;
+      }
+      .guess-btn {
+        padding: 8px 4px;
+      }
+      .btn-action {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-top">
+      <div class="brand-section">
+        <div class="brand-icon">
+          <!-- Music Note Icon -->
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Soprano Recorder</h1>
+          <p id="brand-subtitle" class="brand-subtitle">C Major Scale Visual Trainer</p>
+        </div>
+      </div>
+
+      <!-- Controls: Hard Mode, Shuffle & Theme Toggle -->
+      <div class="header-actions">
+        <button id="btn-hard" type="button" class="btn-icon-text" title="Toggle Hard Mode (Extended & Chromatic Notes)" aria-pressed="false">
+          <span>Hard</span>
+        </button>
+
+        <button id="btn-shuffle" type="button" class="btn-icon-text" title="Shuffle Deck">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" />
+          </svg>
+          <span>Shuffle</span>
+        </button>
+
+        <button id="btn-theme" type="button" class="btn-square" title="Toggle Theme">
+          <!-- Sun Icon (dark mode) -->
+          <svg id="icon-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display: none;">
+            <circle cx="12" cy="12" r="5" />
+            <path stroke-linecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+          </svg>
+          <!-- Moon Icon (light mode) -->
+          <svg id="icon-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Deck Switcher Tabs -->
+    <div class="deck-switcher">
+      <button id="mode-staff" type="button" class="deck-tab active">Deck 1: Staff → Note</button>
+      <button id="mode-fingering" type="button" class="deck-tab">Deck 2: Fingering → Note</button>
+    </div>
+
+    <!-- Stats Bar & Progress -->
+    <div class="stats-bar">
+      <div>Card <strong id="stat-progress">1 / 9</strong> &nbsp;•&nbsp; Score: <strong id="stat-score" style="color: var(--emerald-text);">0</strong></div>
+      <div>Streak: <span id="stat-streak" class="streak-badge">0 🔥</span></div>
+    </div>
+    <div class="progress-track">
+      <div id="progress-bar" class="progress-fill" style="width: 11.11%;"></div>
+    </div>
+  </header>
+
+  <!-- Main Flashcard Stage -->
+  <main>
+    <div class="perspective-container">
+      <div id="flashcard-inner" class="flashcard-inner">
+
+        <!-- FRONT OF CARD -->
+        <div class="card-face card-front">
+          <div class="card-top">
+            <span id="front-badge" class="badge-mode">Read the Staff</span>
+            <button id="btn-toggle-hint" class="btn-hint" type="button">
+              <svg width="14" height="14" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span id="hint-btn-label">Show Hint</span>
+            </button>
+          </div>
+
+          <!-- Front SVG Visual Container -->
+          <div id="front-visual-container" class="visual-stage"></div>
+
+          <!-- Optional Hint Container -->
+          <div id="hint-box" class="hint-box hidden">
+            <span id="hint-text">Hint goes here</span>
+          </div>
+
+          <div class="card-footer-prompt">
+            Tap a note below to guess, or tap card to flip
+          </div>
+        </div>
+
+        <!-- BACK OF CARD -->
+        <div class="card-face card-back">
+          <div class="back-header">
+            <div>
+              <div class="back-title-group">
+                <h2 id="back-note-title" class="back-note-title">Low C</h2>
+                <span id="back-note-scientific" class="back-note-scientific">C5</span>
+              </div>
+              <p id="back-note-desc" class="back-note-desc">All holes covered</p>
+            </div>
+
+            <button id="btn-play-tone" class="btn-play-tone" type="button">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              </svg>
+              <span>Play Pitch</span>
+            </button>
+          </div>
+
+          <!-- Back SVG Visual Container -->
+          <div id="back-visual-container" class="visual-stage" style="flex-direction: row; gap: 16px;"></div>
+
+          <div class="back-footer">
+            <span>Baroque Fingering</span>
+            <span style="color: var(--primary); font-weight: 600;">Tap to flip back</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Controls & Answer Checking -->
+    <section class="controls-section">
+      <div class="feedback-banner">
+        <span id="feedback-text" class="feedback-text">Which note is shown above?</span>
+      </div>
+
+      <!-- Note Guess Buttons (Rendered dynamically for Standard vs Hard Mode) -->
+      <div id="guess-grid" class="guess-grid"></div>
+
+      <!-- Primary Action Buttons -->
+      <div class="action-grid">
+        <button id="btn-flip" type="button" class="btn-action btn-secondary">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>Flip Card</span>
+        </button>
+
+        <button id="btn-next" type="button" class="btn-action btn-primary">
+          <span>Next Card</span>
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  /**
+   * Soprano Recorder C Major Scale Dataset
+   * Notes: Low C (C5) through High D (D6)
+   */
+  const RECORDER_NOTES = [
+    {
+      id: 'C5',
+      letter: 'C',
+      name: 'Low C',
+      scientific: 'C5',
+      freq: 523.25,
+      staffStep: -2,
+      ledgerLines: [-2],
+      hint: 'Sits on its own ledger line just below the staff. Lowest note on the recorder.',
+      fingeringText: 'Thumb + All 7 holes closed',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 1, 1, 1, 1, 1]
+    },
+    {
+      id: 'D5',
+      letter: 'D',
+      name: 'Low D',
+      scientific: 'D5',
+      freq: 587.33,
+      staffStep: -1,
+      ledgerLines: [],
+      hint: 'Hangs directly underneath the bottom line of the staff.',
+      fingeringText: 'Thumb + Holes 1–6 closed (bottom hole open)',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 1, 1, 1, 0, 0]
+    },
+    {
+      id: 'E5',
+      letter: 'E',
+      name: 'E',
+      scientific: 'E5',
+      freq: 659.25,
+      staffStep: 0,
+      ledgerLines: [],
+      hint: 'Sits directly on the 1st (bottom) line of the staff ("Every").',
+      fingeringText: 'Thumb + Holes 1–5 closed',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'F5',
+      letter: 'F',
+      name: 'F',
+      scientific: 'F5',
+      freq: 698.46,
+      staffStep: 1,
+      ledgerLines: [],
+      hint: 'Sits in the 1st space from the bottom ("F-A-C-E").',
+      fingeringText: 'Baroque F: Thumb + 1, 2, 3, 4, 6, 7 closed (5 open)',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 0, 1, 1, 1, 1]
+    },
+    {
+      id: 'G5',
+      letter: 'G',
+      name: 'G',
+      scientific: 'G5',
+      freq: 783.99,
+      staffStep: 2,
+      ledgerLines: [],
+      hint: 'Sits on the 2nd line from the bottom—the line the treble clef curls around!',
+      fingeringText: 'Thumb + Left Hand (1, 2, 3) closed',
+      thumb: 1,
+      holes: [1, 1, 1, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'A5',
+      letter: 'A',
+      name: 'A',
+      scientific: 'A5',
+      freq: 880.00,
+      staffStep: 3,
+      ledgerLines: [],
+      hint: 'Sits in the 2nd space from the bottom ("F-A-C-E").',
+      fingeringText: 'Thumb + Holes 1 & 2 closed',
+      thumb: 1,
+      holes: [1, 1, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'B5',
+      letter: 'B',
+      name: 'B',
+      scientific: 'B5',
+      freq: 987.77,
+      staffStep: 4,
+      ledgerLines: [],
+      hint: 'Sits right on the middle (3rd) line of the staff.',
+      fingeringText: 'Thumb + Hole 1 closed',
+      thumb: 1,
+      holes: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'C6',
+      letter: 'C',
+      name: 'High C',
+      scientific: 'C6',
+      freq: 1046.50,
+      staffStep: 5,
+      ledgerLines: [],
+      hint: 'Sits in the 3rd space from the bottom ("F-A-C-E").',
+      fingeringText: 'Thumb + Hole 2 closed (Hole 1 open)',
+      thumb: 1,
+      holes: [0, 1, 0, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'D6',
+      letter: 'D',
+      name: 'High D',
+      scientific: 'D6',
+      freq: 1174.66,
+      staffStep: 6,
+      ledgerLines: [],
+      hint: 'Sits on the 4th line from the bottom (second line from top).',
+      fingeringText: 'Thumb OPEN + Hole 2 closed',
+      thumb: 0,
+      holes: [0, 1, 0, 0, 0, 0, 0, 0, 0]
+    }
+  ];
+
+  /**
+   * Hard Mode Extended Notes (Chromatic, High & Highest Registers)
+   */
+  const HARD_MODE_NOTES = [
+    {
+      id: 'Cs5',
+      letter: 'C♯/D♭',
+      name: 'Low C♯ / D♭',
+      scientific: 'C♯5 / D♭5',
+      freq: 554.37,
+      staffStep: -2,
+      ledgerLines: [-2],
+      accidental: 'sharp',
+      hint: 'On the low C ledger line with a sharp (#). Half-cover hole 7.',
+      fingeringText: 'Thumb + Holes 1–6 closed, Hole 7 half-closed',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 1, 1, 1, 1, 0.5]
+    },
+    {
+      id: 'Ds5',
+      letter: 'D♯/E♭',
+      name: 'Low D♯ / E♭',
+      scientific: 'D♯5 / E♭5',
+      freq: 622.25,
+      staffStep: -1,
+      ledgerLines: [],
+      accidental: 'sharp',
+      hint: 'Below line 1 with a sharp (#). Half-cover hole 6.',
+      fingeringText: 'Thumb + Holes 1–5 closed, Hole 6 half-closed',
+      thumb: 1,
+      holes: [1, 1, 1, 1, 1, 1, 0.5, 0, 0]
+    },
+    {
+      id: 'Fs5',
+      letter: 'F♯/G♭',
+      name: 'F♯ / G♭',
+      scientific: 'F♯5 / G♭5',
+      freq: 739.99,
+      staffStep: 1,
+      ledgerLines: [],
+      accidental: 'sharp',
+      hint: 'Space 1 with a sharp (#). Thumb + 1, 2, 3, 5, 6 closed.',
+      fingeringText: 'Thumb + Holes 1, 2, 3, 5, 6 closed',
+      thumb: 1,
+      holes: [1, 1, 1, 0, 1, 1, 1, 0, 0]
+    },
+    {
+      id: 'Gs5',
+      letter: 'G♯/A♭',
+      name: 'G♯ / A♭',
+      scientific: 'G♯5 / A♭5',
+      freq: 830.61,
+      staffStep: 2,
+      ledgerLines: [],
+      accidental: 'sharp',
+      hint: 'Line 2 with a sharp (#). Thumb + 1, 2, 4, 5 closed.',
+      fingeringText: 'Thumb + Holes 1, 2, 4, 5 closed',
+      thumb: 1,
+      holes: [1, 1, 0, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'As5',
+      letter: 'A♯/B♭',
+      name: 'B♭ / A♯',
+      scientific: 'B♭5 / A♯5',
+      freq: 932.33,
+      staffStep: 4,
+      ledgerLines: [],
+      accidental: 'flat',
+      hint: 'Line 3 with a flat (♭). Thumb + Hole 1 + Hole 3 closed.',
+      fingeringText: 'Thumb + Hole 1 + Hole 3 closed',
+      thumb: 1,
+      holes: [1, 0, 1, 0, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'E6',
+      letter: 'E',
+      name: 'High E',
+      scientific: 'E6',
+      freq: 1318.51,
+      staffStep: 7,
+      ledgerLines: [],
+      hint: 'Sits in the top (4th) space of the staff. Pinched thumb + 1, 2, 3, 4 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 3, 4 closed',
+      thumb: 0.5,
+      holes: [1, 1, 1, 1, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'F6',
+      letter: 'F',
+      name: 'High F',
+      scientific: 'F6',
+      freq: 1396.91,
+      staffStep: 8,
+      ledgerLines: [8],
+      hint: 'Sits on the 5th (top) line of the staff. Pinched thumb + 1, 2, 3, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 3, 5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 1, 0, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'Fs6',
+      letter: 'F♯/G♭',
+      name: 'High F♯ / G♭',
+      scientific: 'F♯6 / G♭6',
+      freq: 1479.98,
+      staffStep: 8,
+      ledgerLines: [8],
+      accidental: 'sharp',
+      hint: 'Top line with a sharp (#). Pinched thumb + 1, 2, 4, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 4, 5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 0, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'G6',
+      letter: 'G',
+      name: 'High G',
+      scientific: 'G6',
+      freq: 1567.98,
+      staffStep: 9,
+      ledgerLines: [],
+      hint: 'Sits just above the top line of the staff. Pinched thumb + 1, 2, 4 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 4 closed',
+      thumb: 0.5,
+      holes: [1, 1, 0, 1, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'Gs6',
+      letter: 'G♯/A♭',
+      name: 'High G♯ / A♭',
+      scientific: 'G♯6 / A♭6',
+      freq: 1661.22,
+      staffStep: 9,
+      ledgerLines: [],
+      accidental: 'sharp',
+      hint: 'Above top line with a sharp (#). Pinched thumb + 1, 2, 3, 4, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1–5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 1, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'A6',
+      letter: 'A',
+      name: 'High A',
+      scientific: 'A6',
+      freq: 1760.00,
+      staffStep: 10,
+      ledgerLines: [10],
+      hint: 'Sits on the 1st ledger line above the staff. Pinched thumb + 1, 2, 3, 4, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 3, 4, 5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 1, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'As6',
+      letter: 'A♯/B♭',
+      name: 'High B♭ / A♯',
+      scientific: 'B♭6 / A♯6',
+      freq: 1864.66,
+      staffStep: 10,
+      ledgerLines: [10],
+      accidental: 'flat',
+      hint: '1st ledger line above the staff with a flat (♭). Pinched thumb + 1, 2, 3, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 3, 5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 1, 0, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'B6',
+      letter: 'B',
+      name: 'High B',
+      scientific: 'B6',
+      freq: 1975.53,
+      staffStep: 11,
+      ledgerLines: [10],
+      hint: 'Sits above the 1st ledger line. Pinched thumb + 1, 3, 4, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 3, 4, 5 closed',
+      thumb: 0.5,
+      holes: [1, 0, 1, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'C7',
+      letter: 'C',
+      name: 'Highest C',
+      scientific: 'C7',
+      freq: 2093.00,
+      staffStep: 12,
+      ledgerLines: [10, 12],
+      hint: 'Sits on the 2nd ledger line above the staff. Pinched thumb + 1, 2, 4, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 2, 4, 5 closed',
+      thumb: 0.5,
+      holes: [1, 1, 0, 1, 1, 0, 0, 0, 0]
+    },
+    {
+      id: 'Cs7',
+      letter: 'C♯/D♭',
+      name: 'Highest C♯ / D♭',
+      scientific: 'C♯7 / D♭7',
+      freq: 2217.46,
+      staffStep: 12,
+      ledgerLines: [10, 12],
+      accidental: 'sharp',
+      hint: '2nd ledger line above the staff with a sharp (#). Pinched thumb + 2, 3, 4 closed.',
+      fingeringText: 'Pinched Thumb + Holes 2, 3, 4 closed',
+      thumb: 0.5,
+      holes: [0, 1, 1, 1, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'D7',
+      letter: 'D',
+      name: 'Highest D',
+      scientific: 'D7',
+      freq: 2349.32,
+      staffStep: 13,
+      ledgerLines: [10, 12],
+      hint: 'Above the 2nd ledger line. Pinched thumb + 1, 3, 4 closed.',
+      fingeringText: 'Pinched Thumb + Holes 1, 3, 4 closed',
+      thumb: 0.5,
+      holes: [1, 0, 1, 1, 0, 0, 0, 0, 0]
+    },
+    {
+      id: 'Ds7',
+      letter: 'D♯/E♭',
+      name: 'Highest E♭ / D♯',
+      scientific: 'E♭7 / D♯7',
+      freq: 2489.02,
+      staffStep: 13,
+      ledgerLines: [10, 12],
+      accidental: 'flat',
+      hint: 'Above the 2nd ledger line with a flat (♭). Pinched thumb + 2, 3, 5 closed.',
+      fingeringText: 'Pinched Thumb + Holes 2, 3, 5 closed',
+      thumb: 0.5,
+      holes: [0, 1, 1, 0, 1, 0, 0, 0, 0]
+    }
+  ];
+
+  const STANDARD_BUTTONS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+  const HARD_BUTTONS = [
+    'C', 'C♯/D♭', 'D', 'D♯/E♭',
+    'E', 'F', 'F♯/G♭', 'G',
+    'G♯/A♭', 'A', 'A♯/B♭', 'B'
+  ];
+
+  function getSourceNotes(hardMode) {
+    return hardMode ? [...RECORDER_NOTES, ...HARD_MODE_NOTES] : [...RECORDER_NOTES];
+  }
+
+  // State Management
+  let state = {
+    hardMode: false,
+    deckMode: 'staff',
+    deck: [...RECORDER_NOTES],
+    currentIndex: 0,
+    isFlipped: false,
+    showHint: false,
+    score: 0,
+    streak: 0,
+    solvedCurrent: false
+  };
+
+  // Web Audio Synthesizer
+  let audioCtx = null;
+
+  function playRecorderTone(frequency) {
+    try {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const now = audioCtx.currentTime;
+      const duration = 0.85;
+
+      const osc1 = audioCtx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(frequency, now);
+
+      const osc2 = audioCtx.createOscillator();
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(frequency * 2, now);
+
+      const gain1 = audioCtx.createGain();
+      const gain2 = audioCtx.createGain();
+      const masterGain = audioCtx.createGain();
+
+      masterGain.gain.setValueAtTime(0.001, now);
+      masterGain.gain.exponentialRampToValueAtTime(0.28, now + 0.055);
+      masterGain.gain.setValueAtTime(0.25, now + duration - 0.15);
+      masterGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      gain1.gain.value = 0.85;
+      gain2.gain.value = 0.09;
+
+      osc1.connect(gain1);
+      osc2.connect(gain2);
+      gain1.connect(masterGain);
+      gain2.connect(masterGain);
+      masterGain.connect(audioCtx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + duration);
+      osc2.stop(now + duration);
+
+      const btn = document.getElementById('btn-play-tone');
+      if (btn) {
+        btn.classList.remove('playing-tone');
+        void btn.offsetWidth;
+        btn.classList.add('playing-tone');
+      }
+    } catch (err) {
+      console.warn('Web Audio playback unavailable:', err);
+    }
+  }
+
+  /**
+   * Generates responsive inline SVG for Treble Staff (supports high/low ledger lines & accidentals)
+   */
+  function createStaffSVG(note, compact = false) {
+    const lineSpacing = 12;
+    const stepHeight = lineSpacing / 2;
+    const bottomLineY = 122;
+    const noteY = bottomLineY - (note.staffStep * stepHeight);
+    const noteX = compact ? 132 : 172;
+
+    let staffLinesSVG = '';
+    for (let i = 0; i < 5; i++) {
+      const y = bottomLineY - (i * lineSpacing);
+      staffLinesSVG += `<line x1="16" y1="${y}" x2="${compact ? 200 : 270}" y2="${y}" stroke="var(--svg-staff-line)" stroke-width="1.5" />`;
+    }
+
+    let ledgerSVG = '';
+    if (note.ledgerLines && note.ledgerLines.length > 0) {
+      note.ledgerLines.forEach(step => {
+        const ly = bottomLineY - (step * stepHeight);
+        ledgerSVG += `<line x1="${noteX - 18}" y1="${ly}" x2="${noteX + 18}" y2="${ly}" stroke="var(--svg-stroke)" stroke-width="1.8" />`;
+      });
+    }
+
+    let accidentalSVG = '';
+    if (note.accidental === 'sharp') {
+      accidentalSVG = `<text x="${noteX - 24}" y="${noteY + 5}" fill="var(--svg-stroke)" font-size="16px" font-weight="bold">♯</text>`;
+    } else if (note.accidental === 'flat') {
+      accidentalSVG = `<text x="${noteX - 23}" y="${noteY + 5}" fill="var(--svg-stroke)" font-size="16px" font-weight="bold">♭</text>`;
+    }
+
+    const stemDown = note.staffStep >= 4;
+    const stemX = stemDown ? noteX - 7.5 : noteX + 7.5;
+    const stemY2 = stemDown ? noteY + 34 : noteY - 34;
+    const viewBoxWidth = compact ? 220 : 290;
+    const heightStyle = compact ? 'height: 120px;' : 'height: 170px;';
+
+    return `
+      <svg viewBox="0 0 ${viewBoxWidth} 165" style="width: 100%; ${heightStyle} max-width: 290px;" aria-label="Musical staff">
+        ${staffLinesSVG}
+        <g transform="translate(22, 46) scale(0.68)">
+          <path d="M23.5 98.5 C16.5 98.5 11.5 93.5 11.5 87.2 C11.5 81.2 16.2 76.8 22.1 76.8 C27.2 76.8 30.8 80.5 30.8 85.2 C30.8 89.2 27.8 92.2 24.1 92.2 C21.5 92.2 19.6 90.6 19.6 88.4 C19.6 86.7 20.9 85.4 22.5 85.4 C23.6 85.4 24.5 86.1 24.7 87.1 C25.9 86.5 26.5 85.2 26.5 83.6 C26.5 80.9 24.3 79.1 21.4 79.1 C17.4 79.1 14.6 82.4 14.6 86.8 C14.6 92.1 18.8 96.1 24.5 96.1 C31.8 96.1 37.2 90.3 37.2 82.2 C37.2 74.6 32.1 68.8 24.6 67.3 L22.2 54.4 C31.4 47.4 37.5 37.5 37.5 26.4 C37.5 15.8 32.2 7.5 26.8 7.5 C21.5 7.5 17.5 14.8 17.5 24.8 C17.5 31.4 19.1 38.6 20.8 45.8 C12.4 52.8 6.5 61.2 6.5 71.8 C6.5 84.8 16.4 94.2 29.8 94.2 C32.5 94.2 35.1 93.8 37.4 93.1"
+            fill="none" stroke="var(--svg-stroke)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M26.8 7.5 L20.8 45.8 L24.6 67.3 L27.6 104.5 C28.1 110.5 24.5 114.8 19.2 114.8 C14.5 114.8 11.2 111.5 11.2 107.4 C11.2 104.2 13.6 101.8 16.6 101.8 C19.4 101.8 21.5 103.8 21.5 106.5 C21.5 108.8 19.8 110.5 17.6 110.5"
+            fill="none" stroke="var(--svg-stroke)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M24.6 67.3 C18.2 66.2 13.8 61.2 13.8 55.2 C13.8 48.2 19.5 43.2 26.5 43.2 C33.5 43.2 38.8 48.5 38.8 55.4 C38.8 61.8 34.2 66.6 28.2 67.3"
+            fill="none" stroke="var(--svg-stroke)" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+        ${ledgerSVG}
+        ${accidentalSVG}
+        <line x1="${stemX}" y1="${noteY}" x2="${stemX}" y2="${stemY2}" stroke="var(--svg-notehead)" stroke-width="2.2" stroke-linecap="round" />
+        <ellipse cx="${noteX}" cy="${noteY}" rx="8.5" ry="6.2" transform="rotate(-18 ${noteX} ${noteY})" fill="var(--svg-notehead)" />
+      </svg>
+    `;
+  }
+
+  /**
+   * Generates responsive inline SVG for Soprano Recorder Fingering Diagram
+   */
+  function createFingeringSVG(note, compact = false) {
+    const renderHole = (cx, cy, r, stateVal) => {
+      if (stateVal === 1) {
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--svg-notehead)" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
+      } else if (stateVal === 0.5) {
+        return `
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--bg-card)" stroke="var(--svg-stroke)" stroke-width="1.6" />
+          <path d="M ${cx - r} ${cy} A ${r} ${r} 0 0 0 ${cx + r} ${cy} Z" fill="var(--svg-notehead)" />
+        `;
+      } else {
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--bg-card)" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
+      }
+    };
+
+    const h = note.holes;
+    const heightStyle = compact ? 'height: 135px;' : 'height: 180px;';
+
+    return `
+      <svg viewBox="0 0 110 215" style="${heightStyle} width: auto;" aria-label="Recorder fingering diagram">
+        <text x="18" y="22" text-anchor="middle" fill="var(--text-light)" font-size="9px" font-weight="bold">THUMB</text>
+        ${renderHole(18, 36, 7.5, note.thumb)}
+
+        <rect x="44" y="10" width="32" height="195" rx="14" fill="var(--svg-recorder-body)" stroke="var(--svg-recorder-border)" stroke-width="2" />
+        <line x1="38" y1="98" x2="82" y2="98" stroke="var(--svg-recorder-border)" stroke-width="1.2" stroke-dasharray="3 2" />
+
+        ${renderHole(60, 36, 7.2, h[0])}
+        ${renderHole(60, 60, 7.2, h[1])}
+        ${renderHole(60, 84, 7.2, h[2])}
+
+        ${renderHole(60, 114, 7.2, h[3])}
+        ${renderHole(60, 138, 7.2, h[4])}
+
+        ${renderHole(55.5, 162, 4.3, h[5])}
+        ${renderHole(64.5, 162, 4.3, h[6])}
+
+        ${renderHole(57.5, 185, 4.3, h[7])}
+        ${renderHole(66.5, 185, 4.3, h[8])}
+      </svg>
+    `;
+  }
+
+  /**
+   * Render the guess buttons based on Standard vs Hard mode
+   */
+  function renderGuessButtons() {
+    const grid = document.getElementById('guess-grid');
+    const labels = state.hardMode ? HARD_BUTTONS : STANDARD_BUTTONS;
+    grid.classList.toggle('hard-grid', state.hardMode);
+
+    grid.innerHTML = labels.map(label =>
+      `<button type="button" data-note="${label}" class="guess-btn">${label}</button>`
+    ).join('');
+
+    grid.querySelectorAll('.guess-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleGuess(btn.getAttribute('data-note'), btn));
+    });
+  }
+
+  /**
+   * Render the state of the flashcard
+   */
+  function renderCard() {
+    const currentNote = state.deck[state.currentIndex];
+    const inner = document.getElementById('flashcard-inner');
+    const frontBadge = document.getElementById('front-badge');
+    const frontVisual = document.getElementById('front-visual-container');
+    const backVisual = document.getElementById('back-visual-container');
+    const hintBox = document.getElementById('hint-box');
+    const hintText = document.getElementById('hint-text');
+    const hintBtnLabel = document.getElementById('hint-btn-label');
+    const subtitle = document.getElementById('brand-subtitle');
+    const hardBtn = document.getElementById('btn-hard');
+
+    subtitle.textContent = state.hardMode
+      ? 'Hard Mode • Extended & Chromatic Notes'
+      : 'C Major Scale Visual Trainer';
+
+    if (hardBtn) {
+      hardBtn.classList.toggle('hard-active', state.hardMode);
+      hardBtn.setAttribute('aria-pressed', String(state.hardMode));
+    }
+
+    if (state.isFlipped) {
+      inner.classList.add('rotate-y-180');
+    } else {
+      inner.classList.remove('rotate-y-180');
+    }
+
+    if (state.deckMode === 'staff') {
+      frontBadge.textContent = state.hardMode ? 'Hard • Read the Staff' : 'Read the Staff';
+      frontVisual.innerHTML = createStaffSVG(currentNote, false);
+      backVisual.innerHTML = createFingeringSVG(currentNote, true);
+    } else {
+      frontBadge.textContent = state.hardMode ? 'Hard • Read the Fingering' : 'Read the Fingering';
+      frontVisual.innerHTML = createFingeringSVG(currentNote, false);
+      backVisual.innerHTML = createStaffSVG(currentNote, true);
+    }
+
+    document.getElementById('back-note-title').textContent = currentNote.name;
+    document.getElementById('back-note-scientific').textContent = currentNote.scientific;
+    document.getElementById('back-note-desc').textContent = currentNote.fingeringText;
+
+    hintText.textContent = currentNote.hint;
+    if (state.showHint) {
+      hintBox.classList.remove('hidden');
+      hintBtnLabel.textContent = 'Hide Hint';
+    } else {
+      hintBox.classList.add('hidden');
+      hintBtnLabel.textContent = 'Show Hint';
+    }
+
+    document.getElementById('stat-progress').textContent = `${state.currentIndex + 1} / ${state.deck.length}`;
+    document.getElementById('stat-score').textContent = state.score;
+    document.getElementById('stat-streak').textContent = `${state.streak} 🔥`;
+    const pct = ((state.currentIndex + 1) / state.deck.length) * 100;
+    document.getElementById('progress-bar').style.width = `${pct}%`;
+
+    if (!state.solvedCurrent) {
+      const feedback = document.getElementById('feedback-text');
+      feedback.textContent = 'Which note is shown above?';
+      feedback.className = 'feedback-text';
+    }
+    document.querySelectorAll('.guess-btn').forEach(btn => {
+      btn.classList.remove('btn-correct', 'btn-wrong');
+    });
+  }
+
+  /**
+   * Handle user note guess
+   */
+  function handleGuess(guessedNote, btnElement) {
+    const currentNote = state.deck[state.currentIndex];
+    const feedback = document.getElementById('feedback-text');
+
+    if (guessedNote === currentNote.letter) {
+      btnElement.classList.add('btn-correct');
+      feedback.textContent = `Correct! That's ${currentNote.name} (${currentNote.scientific}).`;
+      feedback.className = 'feedback-text correct';
+
+      if (!state.solvedCurrent) {
+        state.score += state.hardMode ? 15 : 10;
+        state.streak += 1;
+        state.solvedCurrent = true;
+        document.getElementById('stat-score').textContent = state.score;
+        document.getElementById('stat-streak').textContent = `${state.streak} 🔥`;
+      }
+
+      playRecorderTone(currentNote.freq);
+    } else {
+      btnElement.classList.add('btn-wrong');
+      feedback.textContent = `Not quite — try again or flip the card!`;
+      feedback.className = 'feedback-text incorrect';
+      state.streak = 0;
+      document.getElementById('stat-streak').textContent = `0 🔥`;
+    }
+  }
+
+  function flipCard(forceState = null) {
+    state.isFlipped = forceState !== null ? forceState : !state.isFlipped;
+    renderCard();
+  }
+
+  function nextCard() {
+    state.isFlipped = false;
+    state.showHint = false;
+    state.solvedCurrent = false;
+    state.currentIndex = (state.currentIndex + 1) % state.deck.length;
+    renderCard();
+  }
+
+  function shuffleDeck() {
+    const arr = [...state.deck];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    state.deck = arr;
+    state.currentIndex = 0;
+    state.isFlipped = false;
+    state.showHint = false;
+    state.solvedCurrent = false;
+    renderCard();
+
+    const feedback = document.getElementById('feedback-text');
+    feedback.textContent = 'Deck shuffled!';
+    feedback.className = 'feedback-text';
+  }
+
+  function toggleHardMode() {
+    state.hardMode = !state.hardMode;
+    state.deck = getSourceNotes(state.hardMode);
+    state.currentIndex = 0;
+    state.isFlipped = false;
+    state.showHint = false;
+    state.solvedCurrent = false;
+    renderGuessButtons();
+    renderCard();
+  }
+
+  function switchDeckMode(mode) {
+    state.deckMode = mode;
+    state.isFlipped = false;
+    state.showHint = false;
+
+    const staffTab = document.getElementById('mode-staff');
+    const fingeringTab = document.getElementById('mode-fingering');
+    if (mode === 'staff') {
+      staffTab.classList.add('active');
+      fingeringTab.classList.remove('active');
+    } else {
+      fingeringTab.classList.add('active');
+      staffTab.classList.remove('active');
+    }
+    renderCard();
+  }
+
+  function initTheme() {
+    const root = document.documentElement;
+    const sunIcon = document.getElementById('icon-sun');
+    const moonIcon = document.getElementById('icon-moon');
+
+    const updateIcons = () => {
+      const isDark = root.classList.contains('dark');
+      sunIcon.style.display = isDark ? 'block' : 'none';
+      moonIcon.style.display = isDark ? 'none' : 'block';
+    };
+
+    const savedTheme = localStorage.getItem('recorder_theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    }
+    updateIcons();
+
+    document.getElementById('btn-theme').addEventListener('click', () => {
+      root.classList.toggle('dark');
+      const isDark = root.classList.contains('dark');
+      localStorage.setItem('recorder_theme', isDark ? 'dark' : 'light');
+      updateIcons();
+    });
+  }
+
+  function bindEvents() {
+    document.getElementById('flashcard-inner').addEventListener('click', (e) => {
+      if (e.target.closest('#btn-toggle-hint') || e.target.closest('#btn-play-tone')) {
+        return;
+      }
+      flipCard();
+    });
+
+    document.getElementById('btn-flip').addEventListener('click', () => flipCard());
+    document.getElementById('btn-next').addEventListener('click', () => nextCard());
+    document.getElementById('btn-shuffle').addEventListener('click', () => shuffleDeck());
+    document.getElementById('btn-hard').addEventListener('click', () => toggleHardMode());
+
+    document.getElementById('btn-toggle-hint').addEventListener('click', (e) => {
+      e.stopPropagation();
+      state.showHint = !state.showHint;
+      renderCard();
+    });
+
+    document.getElementById('btn-play-tone').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const currentNote = state.deck[state.currentIndex];
+      playRecorderTone(currentNote.freq);
+    });
+
+    document.getElementById('mode-staff').addEventListener('click', () => switchDeckMode('staff'));
+    document.getElementById('mode-fingering').addEventListener('click', () => switchDeckMode('fingering'));
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        flipCard();
+      } else if (e.code === 'ArrowRight') {
+        nextCard();
+      } else if (e.code === 'KeyH') {
+        state.showHint = !state.showHint;
+        renderCard();
+      } else if (e.code === 'KeyP') {
+        playRecorderTone(state.deck[state.currentIndex].freq);
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    bindEvents();
+    renderGuessButtons();
+    renderCard();
+  });
+</script>
+</body>
+</html>
