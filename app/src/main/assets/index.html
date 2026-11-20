@@ -216,10 +216,10 @@
           transform: scale(0.96);
         }
 
-        /* Deck Switcher (3 Decks) */
+        /* Deck Switcher (4 Decks) */
         .deck-switcher {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           padding: 4px;
           gap: 4px;
           border-radius: 12px;
@@ -228,9 +228,9 @@
         }
 
         .deck-tab {
-          padding: 8px 8px;
+          padding: 8px 5px;
           border-radius: 8px;
-          font-size: 0.75rem;
+          font-size: 0.7rem;
           font-weight: 600;
           border: none;
           cursor: pointer;
@@ -245,6 +245,71 @@
         .deck-tab.active {
           background-color: var(--bg-card);
           color: var(--primary);
+          box-shadow: var(--shadow-sm);
+        }
+
+        /* Key Signature Menu */
+        .key-menu-wrap {
+          margin-top: 8px;
+          background-color: var(--bg-input);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
+          padding: 6px;
+        }
+
+        .key-menu-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 4px 5px 4px;
+          font-size: 0.68rem;
+          font-weight: 700;
+          color: var(--text-muted);
+        }
+
+        .key-sig-pill {
+          padding: 1px 7px;
+          border-radius: 9999px;
+          background-color: var(--primary-badge-bg);
+          color: var(--primary-badge-text);
+          font-weight: 800;
+        }
+
+        .key-buttons-row {
+          display: flex;
+          gap: 5px;
+          overflow-x: auto;
+          scrollbar-width: none;
+          padding-bottom: 2px;
+        }
+
+        .key-buttons-row::-webkit-scrollbar {
+          display: none;
+        }
+
+        .key-btn {
+          flex: 0 0 auto;
+          padding: 5px 9px;
+          border-radius: 8px;
+          border: 1px solid transparent;
+          background-color: transparent;
+          color: var(--text-muted);
+          font-size: 0.69rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          white-space: nowrap;
+        }
+
+        .key-btn:hover {
+          color: var(--text-main);
+          background-color: var(--bg-subtle);
+        }
+
+        .key-btn.active {
+          background-color: var(--bg-card);
+          color: var(--primary);
+          border-color: var(--border-color);
           box-shadow: var(--shadow-sm);
         }
 
@@ -388,8 +453,9 @@
           display: none;
           flex-direction: column;
           align-items: center;
-          gap: 10px;
+          gap: 8px;
           text-align: center;
+          z-index: 2;
         }
 
         .ear-prompt-overlay.visible {
@@ -403,12 +469,12 @@
         }
 
         .btn-play-again {
-          padding: 10px 16px;
-          border-radius: 12px;
+          padding: 8px 14px;
+          border-radius: 10px;
           background-color: var(--primary);
           color: #ffffff;
           border: none;
-          font-size: 0.82rem;
+          font-size: 0.78rem;
           font-weight: 700;
           cursor: pointer;
           display: inline-flex;
@@ -424,6 +490,172 @@
 
         .btn-play-again:active {
           transform: scale(0.96);
+        }
+
+        /* Call & Response Deck UI */
+        .cr-deck-box {
+          width: 100%;
+          display: none;
+          flex-direction: column;
+          gap: 8px;
+          margin: 6px 0;
+        }
+
+        .cr-deck-box.visible {
+          display: flex;
+        }
+
+        .cr-target-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: baseline;
+          gap: 8px;
+        }
+
+        .cr-target-name {
+          font-size: 1.1rem;
+          font-weight: 800;
+          color: var(--primary);
+        }
+
+        .cr-target-meta {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: var(--text-muted);
+        }
+
+        .cr-meter-card {
+          background-color: var(--bg-input);
+          border: 1px solid var(--border-color);
+          border-radius: 10px;
+          padding: 8px 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .cr-readout-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.75rem;
+          font-weight: 700;
+        }
+
+        .cr-heard-badge {
+          padding: 2px 8px;
+          border-radius: 6px;
+          background-color: var(--bg-card);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
+        }
+
+        .cr-heard-badge.matched {
+          background-color: var(--emerald-bg);
+          border-color: var(--emerald-bg);
+          color: #ffffff;
+        }
+
+        .cr-heard-badge.paused {
+          background-color: var(--amber-bg);
+          border-color: var(--amber-border);
+          color: var(--amber-text);
+        }
+
+        .cr-meter-track {
+          position: relative;
+          width: 100%;
+          height: 10px;
+          border-radius: 9999px;
+          background-color: var(--bg-subtle);
+          overflow: hidden;
+        }
+
+        .cr-sweet-spot {
+          position: absolute;
+          left: 42%;
+          width: 16%;
+          height: 100%;
+          background-color: rgba(16, 185, 129, 0.28);
+        }
+
+        .cr-center-line {
+          position: absolute;
+          left: 50%;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background-color: var(--text-main);
+          transform: translateX(-50%);
+        }
+
+        .cr-needle {
+          position: absolute;
+          top: 1px;
+          bottom: 1px;
+          width: 8px;
+          border-radius: 9999px;
+          background-color: var(--primary);
+          left: 50%;
+          transform: translateX(-50%);
+          transition: left 0.08s ease-out, background-color 0.15s ease;
+        }
+
+        .cr-needle.in-tune {
+          background-color: var(--emerald-bg);
+        }
+
+        .cr-hold-track {
+          width: 100%;
+          height: 5px;
+          border-radius: 9999px;
+          background-color: var(--bg-subtle);
+          overflow: hidden;
+        }
+
+        .cr-hold-fill {
+          width: 0%;
+          height: 100%;
+          background-color: var(--emerald-bg);
+          transition: width 0.05s linear;
+        }
+
+        .cr-actions-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .cr-mic-btn {
+          padding: 8px 10px;
+          border-radius: 10px;
+          border: none;
+          background-color: var(--primary);
+          color: #ffffff;
+          font-size: 0.76rem;
+          font-weight: 700;
+          cursor: pointer;
+        }
+
+        .cr-mic-btn.active {
+          background-color: var(--rose-border);
+        }
+
+        .cr-options-row {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 6px;
+          font-size: 0.68rem;
+          font-weight: 600;
+          color: var(--text-muted);
+        }
+
+        .cr-options-row label {
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
+          cursor: pointer;
         }
 
         .hint-box {
@@ -691,7 +923,7 @@
                 </div>
                 <div>
                     <h1 class="brand-title">Soprano Recorder</h1>
-                    <p id="brand-subtitle" class="brand-subtitle">C Major Scale Visual Trainer</p>
+                    <p id="brand-subtitle" class="brand-subtitle">C Major (No ♯/♭)</p>
                 </div>
             </div>
 
@@ -720,20 +952,30 @@
             </div>
         </div>
 
-        <!-- Deck Switcher Tabs (3 Decks) -->
+        <!-- Deck Switcher Tabs (4 Decks) -->
         <div class="deck-switcher">
-            <button id="mode-staff" type="button" class="deck-tab active">Deck 1: Staff</button>
-            <button id="mode-fingering" type="button" class="deck-tab">Deck 2: Fingering</button>
-            <button id="mode-ear" type="button" class="deck-tab">Deck 3: Ear Training</button>
+            <button id="mode-staff" type="button" class="deck-tab active">1. Staff</button>
+            <button id="mode-fingering" type="button" class="deck-tab">2. Fingering</button>
+            <button id="mode-ear" type="button" class="deck-tab">3. Ear</button>
+            <button id="mode-call" type="button" class="deck-tab">4. Call &amp; Resp</button>
+        </div>
+
+        <!-- Key Menu -->
+        <div class="key-menu-wrap" aria-label="Key signature selector">
+            <div class="key-menu-header">
+                <span>KEY</span>
+                <span id="key-sig-badge" class="key-sig-pill">No ♯/♭</span>
+            </div>
+            <div id="key-buttons-row" class="key-buttons-row"></div>
         </div>
 
         <!-- Stats Bar & Progress -->
         <div class="stats-bar">
-            <div>Card <strong id="stat-progress">1 / 9</strong> &nbsp;•&nbsp; Score: <strong id="stat-score" style="color: var(--emerald-text);">0</strong></div>
+            <div>Card <strong id="stat-progress">1 / 7</strong> &nbsp;•&nbsp; Score: <strong id="stat-score" style="color: var(--emerald-text);">0</strong></div>
             <div>Streak: <span id="stat-streak" class="streak-badge">0 🔥</span></div>
         </div>
         <div class="progress-track">
-            <div id="progress-bar" class="progress-fill" style="width: 11.11%;"></div>
+            <div id="progress-bar" class="progress-fill" style="width: 14.28%;"></div>
         </div>
     </header>
 
@@ -767,6 +1009,41 @@
 
                     <!-- Front SVG Visual Container -->
                     <div id="front-visual-container" class="visual-stage"></div>
+
+                    <!-- Call & Response Interactive Pitch Meter -->
+                    <div id="cr-deck-box" class="cr-deck-box">
+                        <div class="cr-target-row">
+                            <span id="cr-target-name" class="cr-target-name">Low C (C5)</span>
+                            <span id="cr-target-meta" class="cr-target-meta">523.3 Hz</span>
+                        </div>
+
+                        <div class="cr-meter-card">
+                            <div class="cr-readout-row">
+                                <span id="cr-heard-badge" class="cr-heard-badge">Heard: --</span>
+                                <span id="cr-cents-label">0 cents</span>
+                            </div>
+                            <div class="cr-meter-track">
+                                <div class="cr-sweet-spot"></div>
+                                <div class="cr-center-line"></div>
+                                <div id="cr-needle" class="cr-needle"></div>
+                            </div>
+                            <div class="cr-hold-track">
+                                <div id="cr-hold-fill" class="cr-hold-fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="cr-actions-row">
+                            <button id="cr-play-btn" type="button" class="btn-secondary" style="padding: 8px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;">&#9835; Replay Call</button>
+                            <button id="cr-mic-btn" type="button" class="cr-mic-btn">Start Mic</button>
+                        </div>
+
+                        <div class="cr-options-row">
+                            <label><input id="cr-auto-listen" type="checkbox"> Auto-Listen</label>
+                            <label><input id="cr-hide-note" type="checkbox"> Hide Target</label>
+                            <label><input id="cr-octave-tol" type="checkbox" checked> Octave Tol.</label>
+                            <label><input id="cr-auto-next" type="checkbox" checked> Auto-Next</label>
+                        </div>
+                    </div>
 
                     <!-- Optional Hint Container -->
                     <div id="hint-box" class="hint-box hidden">
@@ -1001,21 +1278,168 @@
       }
     ];
 
-    const STANDARD_BUTTONS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    const ALL_NOTES = [...RECORDER_NOTES, ...HARD_MODE_NOTES];
+
+    const KEY_PROFILES = [
+      {
+        id: 'C',
+        label: 'C Maj',
+        fullName: 'C Major',
+        sigLabel: 'No ♯/♭',
+        pitchClasses: [0, 2, 4, 5, 7, 9, 11],
+        preferFlat: false,
+        noteOverrides: {}
+      },
+      {
+        id: 'G',
+        label: 'G Maj',
+        fullName: 'G Major',
+        sigLabel: '1♯ (F♯)',
+        pitchClasses: [7, 9, 11, 0, 2, 4, 6],
+        preferFlat: false,
+        noteOverrides: {
+          F5: 'Fs5',
+          F6: 'Fs6'
+        }
+      },
+      {
+        id: 'F',
+        label: 'F Maj',
+        fullName: 'F Major',
+        sigLabel: '1♭ (B♭)',
+        pitchClasses: [5, 7, 9, 10, 0, 2, 4],
+        preferFlat: true,
+        noteOverrides: {
+          B5: 'As5'
+        }
+      },
+      {
+        id: 'D',
+        label: 'D Maj',
+        fullName: 'D Major',
+        sigLabel: '2♯ (F♯, C♯)',
+        pitchClasses: [2, 4, 6, 7, 9, 11, 1],
+        preferFlat: false,
+        noteOverrides: {
+          C5: 'Cs5',
+          F5: 'Fs5',
+          F6: 'Fs6'
+        }
+      },
+      {
+        id: 'Bb',
+        label: 'B♭ Maj',
+        fullName: 'B♭ Major',
+        sigLabel: '2♭ (B♭, E♭)',
+        pitchClasses: [10, 0, 2, 3, 5, 7, 9],
+        preferFlat: true,
+        noteOverrides: {
+          B5: 'As5',
+          E5: 'Ds5'
+        }
+      },
+      {
+        id: 'A',
+        label: 'A Maj',
+        fullName: 'A Major',
+        sigLabel: '3♯ (F♯, C♯, G♯)',
+        pitchClasses: [9, 11, 1, 2, 4, 6, 8],
+        preferFlat: false,
+        noteOverrides: {
+          C5: 'Cs5',
+          F5: 'Fs5',
+          G5: 'Gs5',
+          F6: 'Fs6',
+          G6: 'Gs6'
+        }
+      },
+      {
+        id: 'ALL',
+        label: 'All Notes',
+        fullName: 'All Keys / Chromatic',
+        sigLabel: 'All ♯/♭',
+        pitchClasses: null,
+        preferFlat: false,
+        noteOverrides: {}
+      }
+    ];
+
     const HARD_BUTTONS = [
       'C', 'C♯/D♭', 'D', 'D♯/E♭',
       'E', 'F', 'F♯/G♭', 'G',
       'G♯/A♭', 'A', 'A♯/B♭', 'B'
     ];
 
-    function getSourceNotes(hardMode) {
-      return hardMode ? [...RECORDER_NOTES, ...HARD_MODE_NOTES] : [...RECORDER_NOTES];
+    const CHROMATIC_SHARP_BUTTONS = [
+      'C', 'C♯', 'D', 'D♯',
+      'E', 'F', 'F♯', 'G',
+      'G♯', 'A', 'A♯', 'B'
+    ];
+
+    const CHROMATIC_FLAT_BUTTONS = [
+      'C', 'D♭', 'D', 'E♭',
+      'E', 'F', 'G♭', 'G',
+      'A♭', 'A', 'B♭', 'B'
+    ];
+
+    const NOTE_NAMES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+    function getKeyProfile(keyId) {
+      return KEY_PROFILES.find((k) => k.id === keyId) || KEY_PROFILES[0];
+    }
+
+    function freqToPitchClass(freq) {
+      const midi = Math.round(frequencyToMidi(freq));
+      return ((midi % 12) + 12) % 12;
+    }
+
+    function findNoteById(id) {
+      return ALL_NOTES.find((n) => n.id === id);
+    }
+
+    function buildDeckForState() {
+      const profile = getKeyProfile(state.keyId);
+
+      if (profile.pitchClasses === null) {
+        return state.hardMode ? [...ALL_NOTES] : [...RECORDER_NOTES];
+      }
+
+      const baseList = state.hardMode ? [...ALL_NOTES] : [...RECORDER_NOTES];
+      const mapped = [];
+      const seenIds = new Set();
+
+      baseList.forEach((n) => {
+        const mappedId = profile.noteOverrides && profile.noteOverrides[n.id];
+        const targetNote = mappedId ? findNoteById(mappedId) : n;
+        if (!targetNote) return;
+
+        const pc = freqToPitchClass(targetNote.freq);
+        if (profile.pitchClasses.includes(pc) && !seenIds.has(targetNote.id)) {
+          seenIds.add(targetNote.id);
+          mapped.push(targetNote);
+        }
+      });
+
+      profile.pitchClasses.forEach((pc) => {
+        const hasPc = mapped.some((n) => freqToPitchClass(n.freq) === pc);
+        if (!hasPc) {
+          const candidate = ALL_NOTES.find((n) => freqToPitchClass(n.freq) === pc && !seenIds.has(n.id));
+          if (candidate) {
+            seenIds.add(candidate.id);
+            mapped.push(candidate);
+          }
+        }
+      });
+
+      return mapped.length > 0 ? mapped : [...RECORDER_NOTES];
     }
 
     let state = {
       hardMode: false,
-      deckMode: 'staff', // 'staff' | 'fingering' | 'ear'
-      deck: [...RECORDER_NOTES],
+      keyId: 'C',
+      deckMode: 'staff', // 'staff' | 'fingering' | 'ear' | 'callResponse'
+      autoListenAfterRespond: false,
+      deck: [],
       currentIndex: 0,
       isFlipped: false,
       showHint: false,
@@ -1023,10 +1447,21 @@
       streak: 0,
       solvedCurrent: false
     };
+    state.deck = buildDeckForState();
 
     let audioCtx = null;
+    let micStream = null;
+    let analyserNode = null;
+    let micActive = false;
+    let usingNativeMic = false;
+    let pendingPlayCallAfterNativeStart = false;
+    let pitchRafId = null;
+    let isTonePlaying = false;
+    let toneGateTimer = null;
+    let holdStartTime = null;
+    const HOLD_DURATION_MS = 400;
 
-    function playRecorderTone(frequency) {
+    function playRecorderTone(frequency, onGateComplete = null) {
       try {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1037,6 +1472,21 @@
 
         const now = audioCtx.currentTime;
         const duration = 0.85;
+
+        isTonePlaying = true;
+        holdStartTime = null;
+        if (toneGateTimer) clearTimeout(toneGateTimer);
+        updateCallGateUI(true);
+
+        toneGateTimer = setTimeout(() => {
+          isTonePlaying = false;
+          holdStartTime = null;
+          toneGateTimer = null;
+          updateCallGateUI(false);
+          if (typeof onGateComplete === 'function') {
+            onGateComplete();
+          }
+        }, (duration * 1000) + 350);
 
         const osc1 = audioCtx.createOscillator();
         osc1.type = 'triangle';
@@ -1064,7 +1514,35 @@
         osc2.start(now);
         osc1.stop(now + duration + 0.02);
         osc2.stop(now + duration + 0.02);
-      } catch (e) {}
+      } catch (e) {
+        if (typeof onGateComplete === 'function') {
+          onGateComplete();
+        }
+      }
+    }
+
+    function updateCallGateUI(gated) {
+      if (state.deckMode !== 'callResponse' || !micActive) return;
+      const heardBadge = document.getElementById('cr-heard-badge');
+      const holdFill = document.getElementById('cr-hold-fill');
+      if (gated) {
+        if (holdFill) holdFill.style.width = '0%';
+        if (heardBadge && !state.solvedCurrent) {
+          heardBadge.className = 'cr-heard-badge paused';
+          heardBadge.textContent = 'Heard: (Paused)';
+        }
+        if (!state.solvedCurrent) {
+          elFeedbackText.textContent = 'Playing tone... mic paused';
+          elFeedbackText.className = 'feedback-text';
+        }
+      } else if (!state.solvedCurrent) {
+        if (heardBadge) {
+          heardBadge.className = 'cr-heard-badge';
+          heardBadge.textContent = 'Heard: --';
+        }
+        elFeedbackText.textContent = 'Your turn — play the target note!';
+        elFeedbackText.className = 'feedback-text';
+      }
     }
 
     function renderStaffSVG(note) {
@@ -1154,6 +1632,7 @@
     const elFrontVisual = document.getElementById('front-visual-container');
     const elBackVisual = document.getElementById('back-visual-container');
     const elEarOverlay = document.getElementById('ear-prompt-overlay');
+    const elCrDeckBox = document.getElementById('cr-deck-box');
     const elCardFooterPrompt = document.getElementById('card-footer-prompt');
     const elHintBox = document.getElementById('hint-box');
     const elHintText = document.getElementById('hint-text');
@@ -1165,6 +1644,8 @@
     const elStatStreak = document.getElementById('stat-streak');
     const elProgressBar = document.getElementById('progress-bar');
     const elBrandSubtitle = document.getElementById('brand-subtitle');
+    const elKeyButtonsRow = document.getElementById('key-buttons-row');
+    const elKeySigBadge = document.getElementById('key-sig-badge');
 
     function currentNote() {
       return state.deck[state.currentIndex] || state.deck[0];
@@ -1178,9 +1659,358 @@
       }
     }
 
+    function autoCorrelate(buf, sampleRate) {
+      const SIZE = buf.length;
+      let rms = 0;
+      for (let i = 0; i < SIZE; i++) rms += buf[i] * buf[i];
+      rms = Math.sqrt(rms / SIZE);
+      if (rms < 0.015) return -1;
+
+      let r1 = 0;
+      let r2 = SIZE - 1;
+      const thres = 0.2;
+      for (let i = 0; i < SIZE / 2; i++) {
+        if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+      }
+      for (let i = 1; i < SIZE / 2; i++) {
+        if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+      }
+
+      const trimmed = buf.slice(r1, r2);
+      const len = trimmed.length;
+      if (len < 32) return -1;
+
+      const c = new Float32Array(len);
+      for (let i = 0; i < len; i++) {
+        let sum = 0;
+        for (let j = 0; j < len - i; j++) sum += trimmed[j] * trimmed[j + i];
+        c[i] = sum;
+      }
+
+      let d = 0;
+      while (d < len - 1 && c[d] > c[d + 1]) d++;
+
+      let maxval = -1;
+      let maxpos = -1;
+      for (let i = d; i < len; i++) {
+        if (c[i] > maxval) {
+          maxval = c[i];
+          maxpos = i;
+        }
+      }
+      if (maxpos <= 0 || maxval < 0.01) return -1;
+
+      let T0 = maxpos;
+      if (maxpos > 0 && maxpos < len - 1) {
+        const a = (c[maxpos - 1] + c[maxpos + 1] - 2 * c[maxpos]) / 2;
+        const b = (c[maxpos + 1] - c[maxpos - 1]) / 2;
+        if (a !== 0) T0 = T0 - b / (2 * a);
+      }
+
+      const freq = sampleRate / T0;
+      if (freq < 220 || freq > 3500) return -1;
+      return freq;
+    }
+
+    function frequencyToMidi(freq) {
+      return 69 + 12 * Math.log2(freq / 440);
+    }
+
+    function midiToNoteLabel(midiRounded) {
+      const noteIndex = ((midiRounded % 12) + 12) % 12;
+      const octave = Math.floor(midiRounded / 12) - 1;
+      return `${NOTE_NAMES_SHARP[noteIndex]}${octave}`;
+    }
+
+    function processSamplesForPitch(samples, sampleRate) {
+      if (!micActive || state.deckMode !== 'callResponse' || isTonePlaying) {
+        holdStartTime = null;
+        return;
+      }
+
+      const freq = autoCorrelate(samples, sampleRate);
+      const heardBadge = document.getElementById('cr-heard-badge');
+      const centsLabel = document.getElementById('cr-cents-label');
+      const needle = document.getElementById('cr-needle');
+      const holdFill = document.getElementById('cr-hold-fill');
+
+      if (freq > 0 && heardBadge && centsLabel && needle && holdFill) {
+        const note = currentNote();
+        const targetMidi = Math.round(frequencyToMidi(note.freq));
+        const detectedMidi = frequencyToMidi(freq);
+        const octaveTol = document.getElementById('cr-octave-tol')?.checked ?? true;
+        const autoNext = document.getElementById('cr-auto-next')?.checked ?? true;
+
+        let semitoneDiff = detectedMidi - targetMidi;
+        if (octaveTol && Math.abs(semitoneDiff + 12) < 1.5) {
+          semitoneDiff += 12;
+        }
+        const centsOff = Math.round(semitoneDiff * 100);
+        const clamped = Math.max(-50, Math.min(50, centsOff));
+
+        heardBadge.textContent = `Heard: ${midiToNoteLabel(Math.round(detectedMidi))} (${Math.round(freq)} Hz)`;
+        centsLabel.textContent = `${centsOff >= 0 ? '+' : ''}${centsOff} cents`;
+        needle.style.left = `${50 + clamped * 0.9}%`;
+
+        if (Math.abs(centsOff) <= 35) {
+          heardBadge.classList.add('matched');
+          needle.classList.add('in-tune');
+
+          if (!state.solvedCurrent) {
+            if (!holdStartTime) holdStartTime = performance.now();
+            const elapsed = performance.now() - holdStartTime;
+            holdFill.style.width = `${Math.min(100, (elapsed / HOLD_DURATION_MS) * 100)}%`;
+
+            if (elapsed >= HOLD_DURATION_MS) {
+              state.solvedCurrent = true;
+              state.score += 10;
+              state.streak += 1;
+              updateStats();
+
+              const targetNameEl = document.getElementById('cr-target-name');
+              if (targetNameEl) targetNameEl.textContent = `${note.name} (${note.scientific})`;
+
+              elFeedbackText.textContent = `Matched ${note.name} (${note.scientific})!`;
+              elFeedbackText.className = 'feedback-text correct';
+
+              if (autoNext) {
+                setTimeout(() => {
+                  if (state.deckMode === 'callResponse' && state.solvedCurrent) {
+                    state.currentIndex = (state.currentIndex + 1) % state.deck.length;
+                    renderCard(true);
+                  }
+                }, 850);
+              }
+            }
+          }
+        } else {
+          heardBadge.classList.remove('matched');
+          needle.classList.remove('in-tune');
+          if (!state.solvedCurrent) {
+            holdStartTime = null;
+            holdFill.style.width = '0%';
+          }
+        }
+      }
+    }
+
+    function startNativeMicFallback(playCallAfterStart) {
+      if (!window.NativeMic || typeof window.NativeMic.startMic !== 'function') {
+        throw new Error('NativeMic bridge unavailable');
+      }
+      usingNativeMic = true;
+      pendingPlayCallAfterNativeStart = Boolean(playCallAfterStart);
+      window.NativeMic.startMic();
+    }
+
+    window.onNativeMicStarted = function () {
+      micActive = true;
+      usingNativeMic = true;
+      const micBtn = document.getElementById('cr-mic-btn');
+      if (micBtn) {
+        micBtn.textContent = 'Stop Mic';
+        micBtn.classList.add('active');
+      }
+      if (pendingPlayCallAfterNativeStart) {
+        pendingPlayCallAfterNativeStart = false;
+        playRecorderTone(currentNote().freq);
+      } else if (!state.solvedCurrent && !isTonePlaying) {
+        elFeedbackText.textContent = 'Your turn — play the target note!';
+        elFeedbackText.className = 'feedback-text';
+      }
+    };
+
+    window.onNativeMicError = function (code) {
+      micActive = false;
+      usingNativeMic = false;
+      pendingPlayCallAfterNativeStart = false;
+      const micBtn = document.getElementById('cr-mic-btn');
+      if (micBtn) {
+        micBtn.textContent = 'Start Mic';
+        micBtn.classList.remove('active');
+      }
+      elFeedbackText.textContent = `Mic error (${code}). Allow mic in Android App Info or check audio input.`;
+      elFeedbackText.className = 'feedback-text incorrect';
+    };
+
+    window.onNativeAudioSamples = function (arr, sampleRate) {
+      if (!micActive || !usingNativeMic) return;
+      processSamplesForPitch(new Float32Array(arr), sampleRate || 44100);
+    };
+
+    async function startMicrophone(playCallAfterStart = true) {
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          startNativeMicFallback(playCallAfterStart);
+          return;
+        }
+
+        if (micStream) {
+          micStream.getTracks().forEach((t) => t.stop());
+          micStream = null;
+        }
+
+        try {
+          micStream = await navigator.mediaDevices.getUserMedia({
+            audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+          });
+        } catch (constraintErr) {
+          if (constraintErr && constraintErr.name === 'NotReadableError') {
+            try {
+              micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            } catch (fallbackErr) {
+              if (fallbackErr && fallbackErr.name === 'NotReadableError' && window.NativeMic) {
+                startNativeMicFallback(playCallAfterStart);
+                return;
+              }
+              throw fallbackErr;
+            }
+          } else {
+            throw constraintErr;
+          }
+        }
+
+        if (!audioCtx || audioCtx.state === 'closed') {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+
+        const source = audioCtx.createMediaStreamSource(micStream);
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 2048;
+        source.connect(analyserNode);
+
+        usingNativeMic = false;
+        micActive = true;
+        const micBtn = document.getElementById('cr-mic-btn');
+        if (micBtn) {
+          micBtn.textContent = 'Stop Mic';
+          micBtn.classList.add('active');
+        }
+        if (playCallAfterStart) {
+          playRecorderTone(currentNote().freq);
+        }
+        runPitchLoop();
+      } catch (err) {
+        if (err && err.name === 'NotReadableError' && window.NativeMic) {
+          startNativeMicFallback(playCallAfterStart);
+          return;
+        }
+        stopMicrophone();
+        const reason = err && err.name ? ` (${err.name})` : '';
+        elFeedbackText.textContent = `Mic error${reason}. Check mic hardware or Android App Info.`;
+        elFeedbackText.className = 'feedback-text incorrect';
+      }
+    }
+
+    function stopMicrophone() {
+      micActive = false;
+      pendingPlayCallAfterNativeStart = false;
+      isTonePlaying = false;
+      holdStartTime = null;
+      if (toneGateTimer) {
+        clearTimeout(toneGateTimer);
+        toneGateTimer = null;
+      }
+      if (pitchRafId) {
+        cancelAnimationFrame(pitchRafId);
+        pitchRafId = null;
+      }
+      if (usingNativeMic && window.NativeMic && typeof window.NativeMic.stopMic === 'function') {
+        try {
+          window.NativeMic.stopMic();
+        } catch (e) {}
+      }
+      usingNativeMic = false;
+      if (micStream) {
+        micStream.getTracks().forEach((t) => t.stop());
+        micStream = null;
+      }
+      analyserNode = null;
+      const micBtn = document.getElementById('cr-mic-btn');
+      if (micBtn) {
+        micBtn.textContent = 'Start Mic';
+        micBtn.classList.remove('active');
+      }
+    }
+
+    function runPitchLoop() {
+      if (!micActive || usingNativeMic || !analyserNode || state.deckMode !== 'callResponse') return;
+      if (isTonePlaying) {
+        holdStartTime = null;
+        pitchRafId = requestAnimationFrame(runPitchLoop);
+        return;
+      }
+
+      const buf = new Float32Array(analyserNode.fftSize);
+      analyserNode.getFloatTimeDomainData(buf);
+      processSamplesForPitch(buf, audioCtx.sampleRate);
+
+      pitchRafId = requestAnimationFrame(runPitchLoop);
+    }
+
+    function getKeyButtonLabels() {
+      const profile = getKeyProfile(state.keyId);
+
+      if (state.hardMode) {
+        if (profile.id === 'ALL') {
+          return HARD_BUTTONS;
+        }
+        return profile.preferFlat ? CHROMATIC_FLAT_BUTTONS : CHROMATIC_SHARP_BUTTONS;
+      }
+
+      if (!profile.pitchClasses) {
+        return ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+      }
+
+      const sharpScaleLetters = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+      const flatScaleLetters  = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
+      const palette = profile.preferFlat ? flatScaleLetters : sharpScaleLetters;
+
+      return profile.pitchClasses.map((pc) => palette[((pc % 12) + 12) % 12]);
+    }
+
+    function normalizeNoteSymbol(sym) {
+      return String(sym || '')
+        .replace(/♯/g, '#')
+        .replace(/♭/g, 'b')
+        .trim()
+        .toUpperCase();
+    }
+
+    const ENHARMONIC_EQUIVALENTS = {
+      'C#': 'DB', 'DB': 'C#',
+      'D#': 'EB', 'EB': 'D#',
+      'F#': 'GB', 'GB': 'F#',
+      'G#': 'AB', 'AB': 'G#',
+      'A#': 'BB', 'BB': 'A#'
+    };
+
+    function symbolsMatch(a, b) {
+      const na = normalizeNoteSymbol(a);
+      const nb = normalizeNoteSymbol(b);
+      if (!na || !nb) return false;
+      if (na === nb) return true;
+      return ENHARMONIC_EQUIVALENTS[na] === nb;
+    }
+
+    function guessMatchesNote(guess, note) {
+      if (symbolsMatch(guess, note.letter)) return true;
+      if (note.letter && note.letter.includes('/')) {
+        return note.letter.split('/').some((part) => symbolsMatch(guess, part));
+      }
+      if (note.scientific) {
+        const sciFirst = note.scientific.split('/')[0].trim().replace(/\d+$/, '');
+        if (symbolsMatch(guess, sciFirst)) return true;
+      }
+      return false;
+    }
+
     function renderGuessButtons() {
-      const buttons = state.hardMode ? HARD_BUTTONS : STANDARD_BUTTONS;
-      elGuessGrid.classList.toggle('hard-grid', state.hardMode);
+      const buttons = getKeyButtonLabels();
+      elGuessGrid.classList.toggle('hard-grid', state.hardMode || buttons.length > 7);
       elGuessGrid.innerHTML = '';
 
       buttons.forEach((label) => {
@@ -1200,7 +2030,7 @@
       const note = currentNote();
       if (!note) return;
 
-      const isCorrect = guess === note.letter;
+      const isCorrect = guessMatchesNote(guess, note);
       if (isCorrect) {
         btnEl.classList.add('btn-correct');
         if (!state.solvedCurrent) {
@@ -1223,6 +2053,33 @@
       updateStats();
     }
 
+    function renderKeyMenu() {
+      const activeProfile = getKeyProfile(state.keyId);
+      elKeySigBadge.textContent = activeProfile.sigLabel;
+      elKeyButtonsRow.innerHTML = '';
+
+      KEY_PROFILES.forEach((profile) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'key-btn' + (profile.id === state.keyId ? ' active' : '');
+        btn.textContent = profile.label;
+        btn.title = `${profile.fullName} (${profile.sigLabel})`;
+        btn.addEventListener('click', () => {
+          selectKey(profile.id);
+        });
+        elKeyButtonsRow.appendChild(btn);
+      });
+    }
+
+    function selectKey(newKeyId) {
+      state.keyId = newKeyId;
+      state.deck = buildDeckForState();
+      state.currentIndex = 0;
+      renderKeyMenu();
+      renderGuessButtons();
+      renderCard(state.deckMode === 'ear' || state.deckMode === 'callResponse');
+    }
+
     function updateStats() {
       const total = state.deck.length || 1;
       elStatProgress.textContent = `${state.currentIndex + 1} / ${total}`;
@@ -1231,50 +2088,113 @@
       elProgressBar.style.width = `${((state.currentIndex + 1) / total) * 100}%`;
     }
 
-    function renderCard(autoPlayEar = false) {
+    function syncCallResponseLabels() {
+      const note = currentNote();
+      if (!note) return;
+      const hideTarget = document.getElementById('cr-hide-note')?.checked ?? false;
+      const targetNameEl = document.getElementById('cr-target-name');
+      const targetMetaEl = document.getElementById('cr-target-meta');
+      if (targetNameEl) {
+        targetNameEl.textContent = hideTarget ? 'Listen & Play Pitch' : `${note.name} (${note.scientific})`;
+      }
+      if (targetMetaEl) {
+        targetMetaEl.textContent = hideTarget ? 'Ear Only' : `${note.freq.toFixed(1)} Hz`;
+      }
+    }
+
+    function renderCard(autoPlayTone = false) {
       const note = currentNote();
       if (!note) return;
 
+      const profile = getKeyProfile(state.keyId);
+
       state.solvedCurrent = false;
       state.showHint = false;
+      holdStartTime = null;
       elHintBox.classList.add('hidden');
       elGuessGrid.querySelectorAll('.guess-btn').forEach((btn) => btn.classList.remove('btn-correct', 'btn-wrong'));
       elHintBtnLabel.textContent = 'Show Hint';
       setFlipped(false);
 
-      elBrandSubtitle.textContent = state.hardMode
-        ? 'Extended & Chromatic Notes'
-        : 'C Major Scale Visual Trainer';
+      elBrandSubtitle.textContent = `${profile.fullName} (${profile.sigLabel})`;
 
       document.getElementById('back-note-title').textContent = note.name;
       document.getElementById('back-note-scientific').textContent = note.scientific;
       document.getElementById('back-note-desc').textContent = note.fingeringText;
       elHintText.textContent = note.hint;
-
       elBackVisual.innerHTML = renderStaffSVG(note) + renderFingeringSVG(note);
 
-      if (state.deckMode === 'ear') {
-        elFrontBadge.textContent = 'Ear Training';
+      if (state.deckMode === 'callResponse') {
+        const autoListenEl = document.getElementById('cr-auto-listen');
+        if (autoListenEl) autoListenEl.checked = state.autoListenAfterRespond;
+
+        elFrontBadge.textContent = `Call & Resp • ${profile.label}`;
+        elEarOverlay.classList.remove('visible');
+        elFrontVisual.style.display = 'none';
+        elFrontVisual.classList.remove('ear-blurred');
+        elCrDeckBox.classList.add('visible');
+
+        const shouldListenAfterTone = micActive || state.autoListenAfterRespond;
+        const heardBadge = document.getElementById('cr-heard-badge');
+        const centsLabel = document.getElementById('cr-cents-label');
+        const needle = document.getElementById('cr-needle');
+        const holdFill = document.getElementById('cr-hold-fill');
+        if (heardBadge) {
+          heardBadge.className = (shouldListenAfterTone && isTonePlaying) ? 'cr-heard-badge paused' : 'cr-heard-badge';
+          heardBadge.textContent = (shouldListenAfterTone && isTonePlaying) ? 'Heard: (Paused)' : 'Heard: --';
+        }
+        if (centsLabel) centsLabel.textContent = '0 cents';
+        if (needle) {
+          needle.style.left = '50%';
+          needle.classList.remove('in-tune');
+        }
+        if (holdFill) holdFill.style.width = '0%';
+
+        syncCallResponseLabels();
+        elCardFooterPrompt.textContent = 'Play the target pitch into your mic or flip to check';
+        elFeedbackText.textContent = micActive
+          ? (isTonePlaying ? 'Playing tone... mic paused' : `Your turn (${profile.fullName}) — play the target note!`)
+          : (state.autoListenAfterRespond
+              ? 'Call tone playing — mic will auto-listen after'
+              : 'Tap "Start Mic" to match pitches in real time');
+        elFeedbackText.className = 'feedback-text';
+
+        if (autoPlayTone || micActive || state.autoListenAfterRespond) {
+          playRecorderTone(note.freq, () => {
+            if (state.deckMode === 'callResponse' && state.autoListenAfterRespond && !micActive) {
+              startMicrophone(false);
+            }
+          });
+          if (micActive && !usingNativeMic) runPitchLoop();
+        }
+      } else if (state.deckMode === 'ear') {
+        elFrontBadge.textContent = `Ear • ${profile.label}`;
         elEarOverlay.classList.add('visible');
+        elCrDeckBox.classList.remove('visible');
+        elFrontVisual.style.display = 'flex';
         elFrontVisual.classList.add('ear-blurred');
         elFrontVisual.innerHTML = renderStaffSVG(note);
         elCardFooterPrompt.textContent = 'Tap "Play Note Again", guess below, or flip to reveal';
         elFeedbackText.textContent = 'Listen to the note and pick its name below';
         elFeedbackText.className = 'feedback-text';
-        if (autoPlayEar) {
+        if (autoPlayTone) {
           playRecorderTone(note.freq);
         }
       } else if (state.deckMode === 'fingering') {
-        elFrontBadge.textContent = 'Read Fingering';
+        elFrontBadge.textContent = `Fingering • ${profile.label}`;
         elEarOverlay.classList.remove('visible');
+        elCrDeckBox.classList.remove('visible');
+        elFrontVisual.style.display = 'flex';
         elFrontVisual.classList.remove('ear-blurred');
         elFrontVisual.innerHTML = renderFingeringSVG(note);
         elCardFooterPrompt.textContent = 'Tap a note below to guess, or tap card to flip';
         elFeedbackText.textContent = 'Which note is shown above?';
         elFeedbackText.className = 'feedback-text';
       } else {
-        elFrontBadge.textContent = 'Read the Staff';
+        elFrontBadge.textContent = `Staff • ${profile.label}`;
         elEarOverlay.classList.remove('visible');
+        elCrDeckBox.classList.remove('visible');
+        elFrontVisual.style.display = 'flex';
         elFrontVisual.classList.remove('ear-blurred');
         elFrontVisual.innerHTML = renderStaffSVG(note);
         elCardFooterPrompt.textContent = 'Tap a note below to guess, or tap card to flip';
@@ -1286,25 +2206,61 @@
     }
 
     function setDeckMode(mode) {
+      if (mode !== 'callResponse' && micActive) {
+        stopMicrophone();
+      }
       state.deckMode = mode;
       document.getElementById('mode-staff').classList.toggle('active', mode === 'staff');
       document.getElementById('mode-fingering').classList.toggle('active', mode === 'fingering');
       document.getElementById('mode-ear').classList.toggle('active', mode === 'ear');
-      renderCard(mode === 'ear');
+      document.getElementById('mode-call').classList.toggle('active', mode === 'callResponse');
+      renderCard(mode === 'ear' || mode === 'callResponse');
     }
 
     document.getElementById('mode-staff').addEventListener('click', () => setDeckMode('staff'));
     document.getElementById('mode-fingering').addEventListener('click', () => setDeckMode('fingering'));
     document.getElementById('mode-ear').addEventListener('click', () => setDeckMode('ear'));
+    document.getElementById('mode-call').addEventListener('click', () => setDeckMode('callResponse'));
+
+    document.getElementById('cr-auto-listen').addEventListener('change', (e) => {
+      e.stopPropagation();
+      state.autoListenAfterRespond = e.target.checked;
+      if (state.autoListenAfterRespond && state.deckMode === 'callResponse' && !micActive && !isTonePlaying) {
+        startMicrophone(false);
+      }
+    });
+
+    document.getElementById('cr-play-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const note = currentNote();
+      if (note) {
+        playRecorderTone(note.freq, () => {
+          if (state.deckMode === 'callResponse' && state.autoListenAfterRespond && !micActive) {
+            startMicrophone(false);
+          }
+        });
+      }
+    });
+
+    document.getElementById('cr-mic-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (micActive) stopMicrophone();
+      else startMicrophone(true);
+    });
+
+    document.getElementById('cr-hide-note').addEventListener('change', (e) => {
+      e.stopPropagation();
+      syncCallResponseLabels();
+    });
 
     document.getElementById('btn-hard').addEventListener('click', (e) => {
       state.hardMode = !state.hardMode;
       e.currentTarget.classList.toggle('hard-active', state.hardMode);
       e.currentTarget.setAttribute('aria-pressed', String(state.hardMode));
-      state.deck = getSourceNotes(state.hardMode);
+      state.deck = buildDeckForState();
       state.currentIndex = 0;
       renderGuessButtons();
-      renderCard(state.deckMode === 'ear');
+      renderCard(state.deckMode === 'ear' || state.deckMode === 'callResponse');
     });
 
     document.getElementById('btn-shuffle').addEventListener('click', () => {
@@ -1313,7 +2269,7 @@
         [state.deck[i], state.deck[j]] = [state.deck[j], state.deck[i]];
       }
       state.currentIndex = 0;
-      renderCard(state.deckMode === 'ear');
+      renderCard(state.deckMode === 'ear' || state.deckMode === 'callResponse');
     });
 
     document.getElementById('btn-theme').addEventListener('click', () => {
@@ -1341,7 +2297,8 @@
       if (note) playRecorderTone(note.freq);
     });
 
-    elFlashcardInner.addEventListener('click', () => {
+    elFlashcardInner.addEventListener('click', (e) => {
+      if (e.target.closest('button') || e.target.closest('input') || e.target.closest('label')) return;
       setFlipped(!state.isFlipped);
     });
 
@@ -1351,10 +2308,11 @@
 
     document.getElementById('btn-next').addEventListener('click', () => {
       state.currentIndex = (state.currentIndex + 1) % state.deck.length;
-      renderCard(state.deckMode === 'ear');
+      renderCard(state.deckMode === 'ear' || state.deckMode === 'callResponse');
     });
 
     // Initialize
+    renderKeyMenu();
     renderGuessButtons();
     renderCard(false);
 </script>
