@@ -1127,7 +1127,7 @@
         id: 'D5', letter: 'D', name: 'Low D', scientific: 'D5', freq: 587.33,
         staffStep: -1, ledgerLines: [],
         hint: 'Hangs directly underneath the bottom line of the staff.',
-        fingeringText: 'Thumb + Holes 1–6 closed (bottom hole open)', thumb: 1, holes: [1, 1, 1, 1, 1, 1, 1, 0, 0]
+        fingeringText: 'Thumb + Holes 1–6 closed (bottom hole open)', thumb: 1, holes: [1, 1, 1, 1, 1, 1, 0, 0, 0]
       },
       {
         id: 'E5', letter: 'E', name: 'E', scientific: 'E5', freq: 659.25,
@@ -1460,6 +1460,31 @@
     let toneGateTimer = null;
     let holdStartTime = null;
     const HOLD_DURATION_MS = 400;
+    let lastKeepScreenOnState = null;
+
+    function setKeepScreenOn(keepOn) {
+      const desired = Boolean(keepOn);
+      if (lastKeepScreenOnState === desired) return;
+      lastKeepScreenOnState = desired;
+
+      const bridges = [window.NativeMic, window.NativeMicBridge];
+      bridges.forEach((bridge) => {
+        if (bridge && typeof bridge.setKeepScreenOn === 'function') {
+          try {
+            bridge.setKeepScreenOn(desired);
+          } catch (e) {}
+        }
+      });
+    }
+
+    function syncScreenWakeLock() {
+      const pageVisible = document.visibilityState !== 'hidden';
+      const shouldKeepAwake =
+        pageVisible &&
+        state.deckMode === 'callResponse' &&
+        (micActive || isTonePlaying || state.solvedCurrent || state.autoListenAfterRespond);
+      setKeepScreenOn(shouldKeepAwake);
+    }
 
     function playRecorderTone(frequency, onGateComplete = null) {
       try {
@@ -1477,12 +1502,14 @@
         holdStartTime = null;
         if (toneGateTimer) clearTimeout(toneGateTimer);
         updateCallGateUI(true);
+        syncScreenWakeLock();
 
         toneGateTimer = setTimeout(() => {
           isTonePlaying = false;
           holdStartTime = null;
           toneGateTimer = null;
           updateCallGateUI(false);
+          syncScreenWakeLock();
           if (typeof onGateComplete === 'function') {
             onGateComplete();
           }
@@ -1515,6 +1542,8 @@
         osc1.stop(now + duration + 0.02);
         osc2.stop(now + duration + 0.02);
       } catch (e) {
+        isTonePlaying = false;
+        syncScreenWakeLock();
         if (typeof onGateComplete === 'function') {
           onGateComplete();
         }
@@ -1587,40 +1616,48 @@
       `;
     }
 
-    function renderFingeringSVG(note) {
-      const holeYs = [52, 72, 90, 108, 128, 146, 164, 182, 200];
-      let holeCircles = '';
-      note.holes.forEach((val, idx) => {
-        const cy = holeYs[idx];
-        if (val === 1) {
-          holeCircles += `<circle cx="90" cy="${cy}" r="6.5" fill="var(--svg-notehead)" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
-        } else if (val === 0.5) {
-          holeCircles += `
-            <circle cx="90" cy="${cy}" r="6.5" fill="none" stroke="var(--svg-stroke)" stroke-width="1.6" />
-            <path d="M90,${cy - 6.5} A6.5,6.5 0 0,0 90,${cy + 6.5} Z" fill="var(--svg-notehead)" />
-          `;
-        } else {
-          holeCircles += `<circle cx="90" cy="${cy}" r="6.5" fill="none" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
-        }
-      });
-
-      let thumbDot = '';
-      if (note.thumb === 1) {
-        thumbDot = `<circle cx="48" cy="52" r="6.5" fill="var(--svg-notehead)" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
-      } else if (note.thumb === 0.5) {
-        thumbDot = `
-          <circle cx="48" cy="52" r="6.5" fill="none" stroke="var(--svg-stroke)" stroke-width="1.6" />
-          <path d="M48,45.5 A6.5,6.5 0 0,0 48,58.5 Z" fill="var(--svg-notehead)" />
+    function renderHoleGraphic(cx, cy, val, r = 6.5) {
+      if (val === 1) {
+        return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--svg-notehead)" stroke="var(--svg-stroke)" stroke-width="1.5" />`;
+      }
+      if (val === 0.5) {
+        return `
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--svg-stroke)" stroke-width="1.5" />
+          <path d="M${cx},${cy - r} A${r},${r} 0 0,0 ${cx},${cy + r} Z" fill="var(--svg-notehead)" />
         `;
-      } else {
-        thumbDot = `<circle cx="48" cy="52" r="6.5" fill="none" stroke="var(--svg-stroke)" stroke-width="1.6" />`;
+      }
+      return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--svg-stroke)" stroke-width="1.5" />`;
+    }
+
+    function renderFingeringSVG(note) {
+      // Indices 0..6 are holes 1..7; indices 7..8 are the paired double holes on holes 6 & 7
+      const holeYs = [50, 69, 88, 107, 126, 146, 166, 185, 203];
+      let holeCircles = '';
+
+      for (let idx = 0; idx < 7; idx++) {
+        const val = note.holes[idx] ?? 0;
+        const cy = holeYs[idx];
+
+        if (idx === 5 && note.holes.length > 7) {
+          // Double hole pair for Hole 6 (both closed on Low D)
+          holeCircles += renderHoleGraphic(84, cy, val, 4.6);
+          holeCircles += renderHoleGraphic(96, cy, val, 4.6);
+        } else if (idx === 6 && note.holes.length > 8) {
+          // Double hole pair for Hole 7 (both open on Low D)
+          holeCircles += renderHoleGraphic(84, cy, val, 4.6);
+          holeCircles += renderHoleGraphic(96, cy, val, 4.6);
+        } else {
+          holeCircles += renderHoleGraphic(90, cy, val, 6.2);
+        }
       }
 
+      const thumbDot = renderHoleGraphic(48, 50, note.thumb ?? 0, 6.2);
+
       return `
-        <svg width="145" height="220" viewBox="0 0 145 220" aria-label="Recorder fingering chart">
-          <rect x="74" y="14" width="32" height="198" rx="14" fill="var(--svg-recorder-body)" stroke="var(--svg-recorder-border)" stroke-width="2" />
-          <text x="48" y="36" text-anchor="middle" font-size="9" font-weight="700" fill="var(--text-muted)">THUMB</text>
-          <line x1="55" y1="52" x2="74" y2="52" stroke="var(--text-muted)" stroke-width="1.2" stroke-dasharray="2,2" />
+        <svg width="145" height="222" viewBox="0 0 145 222" aria-label="Recorder fingering chart">
+          <rect x="74" y="14" width="32" height="200" rx="14" fill="var(--svg-recorder-body)" stroke="var(--svg-recorder-border)" stroke-width="2" />
+          <text x="48" y="34" text-anchor="middle" font-size="9" font-weight="700" fill="var(--text-muted)">THUMB</text>
+          <line x1="55" y1="50" x2="74" y2="50" stroke="var(--text-muted)" stroke-width="1.2" stroke-dasharray="2,2" />
           ${thumbDot}
           ${holeCircles}
         </svg>
@@ -1728,6 +1765,8 @@
         return;
       }
 
+      syncScreenWakeLock();
+
       const freq = autoCorrelate(samples, sampleRate);
       const heardBadge = document.getElementById('cr-heard-badge');
       const centsLabel = document.getElementById('cr-cents-label');
@@ -1766,6 +1805,7 @@
               state.score += 10;
               state.streak += 1;
               updateStats();
+              syncScreenWakeLock();
 
               const targetNameEl = document.getElementById('cr-target-name');
               if (targetNameEl) targetNameEl.textContent = `${note.name} (${note.scientific})`;
@@ -1800,12 +1840,14 @@
       }
       usingNativeMic = true;
       pendingPlayCallAfterNativeStart = Boolean(playCallAfterStart);
+      syncScreenWakeLock();
       window.NativeMic.startMic();
     }
 
     window.onNativeMicStarted = function () {
       micActive = true;
       usingNativeMic = true;
+      syncScreenWakeLock();
       const micBtn = document.getElementById('cr-mic-btn');
       if (micBtn) {
         micBtn.textContent = 'Stop Mic';
@@ -1824,6 +1866,7 @@
       micActive = false;
       usingNativeMic = false;
       pendingPlayCallAfterNativeStart = false;
+      syncScreenWakeLock();
       const micBtn = document.getElementById('cr-mic-btn');
       if (micBtn) {
         micBtn.textContent = 'Start Mic';
@@ -1884,6 +1927,7 @@
 
         usingNativeMic = false;
         micActive = true;
+        syncScreenWakeLock();
         const micBtn = document.getElementById('cr-mic-btn');
         if (micBtn) {
           micBtn.textContent = 'Stop Mic';
@@ -1934,6 +1978,7 @@
         micBtn.textContent = 'Start Mic';
         micBtn.classList.remove('active');
       }
+      syncScreenWakeLock();
     }
 
     function runPitchLoop() {
@@ -2051,6 +2096,7 @@
         elFeedbackText.className = 'feedback-text incorrect';
       }
       updateStats();
+      syncScreenWakeLock();
     }
 
     function renderKeyMenu() {
@@ -2203,6 +2249,7 @@
       }
 
       updateStats();
+      syncScreenWakeLock();
     }
 
     function setDeckMode(mode) {
@@ -2214,6 +2261,7 @@
       document.getElementById('mode-fingering').classList.toggle('active', mode === 'fingering');
       document.getElementById('mode-ear').classList.toggle('active', mode === 'ear');
       document.getElementById('mode-call').classList.toggle('active', mode === 'callResponse');
+      syncScreenWakeLock();
       renderCard(mode === 'ear' || mode === 'callResponse');
     }
 
@@ -2225,6 +2273,7 @@
     document.getElementById('cr-auto-listen').addEventListener('change', (e) => {
       e.stopPropagation();
       state.autoListenAfterRespond = e.target.checked;
+      syncScreenWakeLock();
       if (state.autoListenAfterRespond && state.deckMode === 'callResponse' && !micActive && !isTonePlaying) {
         startMicrophone(false);
       }
@@ -2309,6 +2358,20 @@
     document.getElementById('btn-next').addEventListener('click', () => {
       state.currentIndex = (state.currentIndex + 1) % state.deck.length;
       renderCard(state.deckMode === 'ear' || state.deckMode === 'callResponse');
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden' && micActive) {
+        stopMicrophone();
+      }
+      syncScreenWakeLock();
+    });
+
+    window.addEventListener('pagehide', () => {
+      if (micActive) {
+        stopMicrophone();
+      }
+      setKeepScreenOn(false);
     });
 
     // Initialize
